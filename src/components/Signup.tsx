@@ -71,7 +71,7 @@ export default function Signup() {
     if (!usersString) {
       localStorage.setItem("users", JSON.stringify([formData]));
     } else {
-      const users: User[] = JSON.parse(usersString);
+      const users = JSON.parse(usersString);
       const existingUser = users.find(
         (user: User) => user.email === formData.email
       );
@@ -79,7 +79,10 @@ export default function Signup() {
         setError("Email exist");
         return;
       }
-      users.push(formData);
+      users.push({
+        email: formData.email,
+        password: formData.password,
+      });
       localStorage.setItem("users", JSON.stringify(users));
       alert("Signup successful")
     }
