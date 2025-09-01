@@ -1,8 +1,11 @@
 import React, { useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import type { User } from "../common/interface/User";
+import { Link, useNavigate } from "react-router-dom";
+import type { User } from "../common/interface/common-interface";
+import Input from "../components/Input";
+import { getDataFromLocalStorage } from "../services/storageService";
 
 export default function SignIn() {
+  const navigate = useNavigate()
   const LoginBtnRef = useRef<HTMLButtonElement>(null);
   const BtnParentRef = useRef<HTMLDivElement>(null);
   const [buttonPosition, setButtonPosition] = useState<{
@@ -48,15 +51,18 @@ export default function SignIn() {
   };
 
   const handleSubmit = () => {
+    console.log(formData);
+    
     const { isValid, message } = validateFormData();
     if (!isValid) {
       setError(message as string);
       return;
     }
 
-    const usersString: string | null = localStorage.getItem("users");
+    const usersString: string | null = getDataFromLocalStorage("users");
     if (!usersString) {
-      setError("Users Not Found!")
+      setError("Users Not Found!");
+      return;
     }
     const users: User[] = JSON.parse(usersString as string);
     const existingUser: User | undefined = users.find(
@@ -64,15 +70,15 @@ export default function SignIn() {
         user.email === formData.email && user.password === formData.password
     );
     if (existingUser) {
-      alert("Welcome " + existingUser.email);
+      navigate(`/dashboard?email=${formData.email}`)
     } else {
-      setError("Invalid credentials")
+      setError("Invalid credentials");
     }
   };
 
   const moveHandler = () => {
-    const { isValid, message } = validateFormData()
-    
+    const { isValid, message } = validateFormData();
+
     if (isValid) {
       setError(message as string);
       return;
@@ -103,38 +109,24 @@ export default function SignIn() {
         <div>{error && <p className="text-red-500">{error}</p>}</div>
         <div className="mt-8 space-y-6">
           <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-            </div>
+            <Input
+              label="Email address"
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Email address"
+              value={formData.email}
+              handleChange={handleChange}
+            />
+            <Input
+              label="Password"
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Password"
+              value={formData.password}
+              handleChange={handleChange}
+            />
           </div>
           <div className="w-full h-24" ref={BtnParentRef}>
             <button

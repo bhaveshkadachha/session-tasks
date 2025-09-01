@@ -1,8 +1,11 @@
 import React, { useRef, useState } from "react";
-import type { User } from "../common/interface/User";
-import { Link } from "react-router-dom";
+import type { User } from "../common/interface/common-interface";
+import { Link, useNavigate } from "react-router-dom";
+import Input from "../components/Input";
+import { getDataFromLocalStorage, setDataToLocalStorage } from "../services/storageService";
 
 export default function Signup() {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState<User>({
     confirmPassword: "",
     email: "",
@@ -67,9 +70,9 @@ export default function Signup() {
       return;
     }
 
-    const usersString: string | null = localStorage.getItem("users");
+    const usersString: string | null = getDataFromLocalStorage("users");
     if (!usersString) {
-      localStorage.setItem("users", JSON.stringify([formData]));
+      setDataToLocalStorage("users", JSON.stringify([formData]));
     } else {
       const users = JSON.parse(usersString);
       const existingUser = users.find(
@@ -83,9 +86,10 @@ export default function Signup() {
         email: formData.email,
         password: formData.password,
       });
-      localStorage.setItem("users", JSON.stringify(users));
-      alert("Signup successful")
+      setDataToLocalStorage("users", JSON.stringify(users));
     }
+    alert("Signup successful");
+    navigate('/')
   };
 
   const moveHandler = () => {
@@ -121,54 +125,34 @@ export default function Signup() {
 
         <div className="mt-8 space-y-6">
           <div className="rounded-md shadow-sm -space-y-px">
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-                value={formData.email}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                required
-                className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label htmlFor="confirmPassword" className="sr-only">
-                Password
-              </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                autoComplete="new-password"
-                required
-                className="relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Confirm Password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-              />
-            </div>
+            <Input
+              label="Email address"
+              id="email"
+              name="email"
+              type="email"
+              placeholder="Email address"
+              value={formData.email}
+              handleChange={handleChange}
+            />
+            <Input
+              label="Password"
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Password"
+              value={formData.password}
+              handleChange={handleChange}
+            />
+            <Input
+              label="Confirm Password"
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              placeholder="Confirm Password"
+              value={formData.confirmPassword}
+              handleChange={handleChange}
+            />
+          
           </div>
 
           <div className="w-full h-24" ref={BtnParentRef}>
