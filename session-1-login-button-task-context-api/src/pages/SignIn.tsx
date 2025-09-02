@@ -1,11 +1,15 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import type { User } from "../common/interface/common-interface";
 import Input from "../components/Input";
-import { getDataFromLocalStorage } from "../services/storageService";
+import {
+  getDataFromLocalStorage,
+} from "../services/storageService";
+import UserContext from "../store/store";
 
 export default function SignIn() {
-  const navigate = useNavigate()
+  const userCtx = useContext(UserContext)
+  const navigate = useNavigate();
   const LoginBtnRef = useRef<HTMLButtonElement>(null);
   const BtnParentRef = useRef<HTMLDivElement>(null);
   const [buttonPosition, setButtonPosition] = useState<{
@@ -14,10 +18,7 @@ export default function SignIn() {
   }>({ x: 0, y: 0 });
   const [error, setError] = useState<string>("");
 
-  const [formData, setFormData] = useState<{
-    email: string;
-    password: string;
-  }>({
+  const [formData, setFormData] = useState<User>({
     email: "",
     password: "",
   });
@@ -52,7 +53,7 @@ export default function SignIn() {
 
   const handleSubmit = () => {
     console.log(formData);
-    
+
     const { isValid, message } = validateFormData();
     if (!isValid) {
       setError(message as string);
@@ -70,7 +71,8 @@ export default function SignIn() {
         user.email === formData.email && user.password === formData.password
     );
     if (existingUser) {
-      navigate(`/dashboard?email=${formData.email}`)
+      userCtx.onLogin(existingUser)
+      navigate(`/dashboard`);
     } else {
       setError("Invalid credentials");
     }

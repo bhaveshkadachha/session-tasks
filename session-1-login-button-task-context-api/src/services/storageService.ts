@@ -6,3 +6,4 @@ export function getDataFromLocalStorage(key: string) {
 export function setDataToLocalStorage(key: string, value: string) {
     localStorage.setItem(key, JSON.stringify(value));
 }
+

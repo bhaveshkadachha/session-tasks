@@ -3,7 +3,7 @@ import type React from "react";
 export interface User {
   email: string;
   password: string;
-  confirmPassword: string;
+  confirmPassword?: string;
 }
 export interface InputProps{
     id: string
