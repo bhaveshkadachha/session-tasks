@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+*{
+    font-family: "Sora", sans-serif;
+}
+
+.hide-scrollbar {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox, Safari 18.2+, Chromium 121+ */
+}
