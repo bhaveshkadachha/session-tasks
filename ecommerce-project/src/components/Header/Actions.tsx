@@ -1,4 +1,11 @@
+import { useDispatch, useSelector } from "react-redux";
+import { modelActions } from "../../store/model-slice";
+import type { State } from "../../store/store";
+
 export default function Actions() {
+  const cartItemCount = useSelector((state: State)=>state.cart.totalQuantity)
+  const dispatch = useDispatch()
+
   return (
     <div className="flex gap-5">
       <button className="cursor-pointer">
@@ -76,7 +83,9 @@ export default function Actions() {
           </defs>
         </svg>
       </button>
-      <button className="cursor-pointer">
+      <button onClick={()=>{ 
+        dispatch(modelActions.onOpen())
+      }} className="cursor-pointer relative">
         <svg width="30px" height="30px" viewBox="0 0 24 24" fill="none">
         <path
           d="M7.5 18C8.32843 18 9 18.6716 9 19.5C9 20.3284 8.32843 21 7.5 21C6.67157 21 6 20.3284 6 19.5C6 18.6716 6.67157 18 7.5 18Z"
@@ -95,6 +104,9 @@ export default function Actions() {
           stroke-linecap="round"
         />
       </svg>
+      <span className="bg-blue-500 text-white text-xs px-1 py-0.5 rounded-full absolute -right-1.5 -top-1.5">
+        {cartItemCount}
+      </span>
       </button>
     </div>
   );
