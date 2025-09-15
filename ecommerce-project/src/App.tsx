@@ -9,7 +9,7 @@ function App() {
       path: "/",
       Component: Layout,
       children: [
-        { path: "product-list", Component: ProductList },
+        { index: true, Component: ProductList },
         { path: "product/:id", Component: Product },
       ],
     },
